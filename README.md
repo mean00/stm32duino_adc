@@ -1,4 +1,4 @@
-This is a more low level/compete version of the STM32DUINO adc management.
+This is a more low level/complete version of the STM32DUINO adc management.
 It enables :
 * Single DMA capture
 * Dual DMA capture
