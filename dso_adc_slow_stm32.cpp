@@ -74,7 +74,7 @@ bool    DSOADC::prepareTimerSampling (int fq,bool overSampling,adc_smp_rate rate
     scaler+=1;
     int high=F_CPU/scaler;
     int overFlow=(high+fq/2)/fq;
-
+    setTimeScale(_timerSamplingRate,_timerScale);
     programTimer(  overFlow,   scaler);
   }
   return true;    

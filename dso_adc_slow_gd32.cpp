@@ -44,6 +44,7 @@ bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSamp
        _timerSamplingRate=adcRate;
        _timerScale=adcScale;
        _overSampling=false;
+       setTimeScale(_timerSamplingRate,_timerScale);
        programTimer(  timerOvf,   timerScale);
      }  
     return true;    
