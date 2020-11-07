@@ -45,8 +45,7 @@ protected:
  */
 void mySetup() 
 {
-      afio_cfg_debug_ports( AFIO_DEBUG_SW_ONLY); // get PB3 & PB4
-
+  afio_cfg_debug_ports( AFIO_DEBUG_SW_ONLY); // get PB3 & PB4
   // switch to uart ASAP    
   Serial.end();
   Serial1.begin(115200);  //Wire.begin();
@@ -159,7 +158,9 @@ void    MainTask::run(void)
       vd=dmaLoop(ADC_VOLT_PIN);     // OK
       vt=timeLoop(ADC_VOLT_PIN);    // OFFset    
 
-        xDelay(1000);
+      sprintf(s,"Analog: %d dmaLoop: %d timeLoop : %d\n",(int)(va*1000),(int)(vd*1000), (int)(vt*1000));
+      Serial1.print(s);
+      xDelay(1000);
     }
 
            
