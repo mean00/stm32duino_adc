@@ -154,8 +154,8 @@ void    MainTask::run(void)
     float vd,va,vt;
     while(1)
     {    
-      //va=analogLoop(ADC_VOLT_PIN);   // OFFSET
-      //vd=dmaLoop(ADC_VOLT_PIN);     // OK
+      va=analogLoop(ADC_VOLT_PIN);   // OFFSET
+      vd=dmaLoop(ADC_VOLT_PIN);     // OK
       vt=timeLoop(ADC_VOLT_PIN);    // OFFset    
 
       sprintf(s,"Analog: %d dmaLoop: %d timeLoop : %d\n",(int)(va*1000),(int)(vd*1000), (int)(vt*1000));
