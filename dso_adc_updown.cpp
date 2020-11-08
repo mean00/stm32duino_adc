@@ -25,6 +25,7 @@ Adafruit Libraries released under their specific licenses Copyright (c) 2013 Ada
 #include "adc.h"
 extern int  readAllRegisters();
 extern uint32_t cr2;
+uint32_t cr1;
 /**
  */
 bool    DSOADC::fastSampleDown(int threshold,int &value, int &timeUs)  
@@ -35,6 +36,7 @@ bool    DSOADC::fastSampleDown(int threshold,int &value, int &timeUs)
     adc_reg_map *regs = dev->regs;           
     setChannel(PIN_MAP[_pin].adc_channel);    
     regs->CR2 &= ~(ADC_CR2_DMA|ADC_CR2_CONT);    
+    regs->CR1 = 0; // force independant mode
     uint32_t val=regs->DR ; // clear pending value
     
     // go
@@ -49,6 +51,7 @@ bool    DSOADC::fastSampleDown(int threshold,int &value, int &timeUs)
     {
         regs->CR2|=ADC_CR2_SWSTART;
         cr2=regs->CR2;
+        cr1=regs->CR1;
         uint32_t sampleStart=millis();
         while(1)
         {
@@ -88,7 +91,9 @@ bool    DSOADC::fastSampleUp(int threshold1,int threshold2,int &value1,int &valu
     adc_reg_map *regs = dev->regs;           
     setChannel(PIN_MAP[_pin].adc_channel);    
     regs->CR2 &= ~(ADC_CR2_DMA|ADC_CR2_CONT);    
+    regs->CR1 = 0; // force independant mode
     uint32_t val=regs->DR ; // clear pending value
+    
       // go
     int c;
     uint32_t timeout=millis();
