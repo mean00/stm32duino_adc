@@ -9,6 +9,7 @@ SET(SRCS dso_adc_fast.cpp
 dso_adc_slow.cpp ${UTIL} 
 dso_adc_util.cpp dso_adc_addon.cpp dso_adc_updown.cpp
 fancyLock.cpp myPwm.cpp
+simpleADC.cpp
 ) 
 #add_library(${libPrefix}adc STATIC ${SRCS})
 generate_arduino_library(${libPrefix}adc 
