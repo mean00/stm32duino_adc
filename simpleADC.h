@@ -27,6 +27,10 @@ public:
         {
             return vcc;
         }
+        void clearSamples()
+        {
+            proxy->clearSamples();
+        }
         ~simpleAdc()
         {
             delete proxy;
