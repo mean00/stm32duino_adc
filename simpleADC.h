@@ -45,52 +45,40 @@ public:
          * nb : in/out, ,nb samples asked, nb samples available
          */
         
-        bool sample(int nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale)
-        {
-            proxy->setupDmaSampling();
-            if(!proxy->prepareDMASampling(rate,scale)) return false;
-            proxy->startDMASampling(nb);
-            if(!proxy->getSamples(data,nb)) return false;
-            return true;
-        }
+        bool sample(int nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale);
+        /**
+         * Acquire nb samples using ADC rate/scale as timebase, using both ADCS
+         * @param otherPin
+         * @param nb
+         * @param data
+         * @param rate
+         * @param scale
+         * @return 
+         */
+        bool dualSample(int otherPin, int nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale);
+        
         /**
          * \brief acquire nb samples using a timer at frequency frequency as time base
+         * \brief : Warning this is using Timer4 !, dont use timer4 for PWM or other
          * @param nb
          * @param data
          * @param frequency
          * @return 
          */
-        bool timeSample(int nb, uint16_t **data,int frequency)
-        {
-            DSOADC::Prescaler scaler;
-            adc_smp_rate rate;
-            xAssert(proxy->frequencyToRateScale (frequency, scaler,rate));
-            proxy->setupTimerSampling();
-            //if(!proxy->prepareTimerSampling(frequency, false, ADC_SMPR_28_5 , DSOADC::ADC_PRESCALER_4)) return false;                       
-            if(!proxy->prepareTimerSampling(frequency, false, rate,scaler)) return false;
-            proxy->startTimerSampling(nb);
-            if(!proxy->getSamples(data,nb)) return false;
-            return true;
-        }
+        bool timeSample(int nb, uint16_t **data,int frequency);
         /**
          * \brief do a dual ADC capture using a timer at frequency hz as timebase
+         * * \brief : Warning this is using Timer4 !, dont use timer4 for PWM or other
          * @param otherPin
          * @param nb
          * @param data
          * @param frequency
          * @return 
          */
-        bool dualTimeSample(int otherPin, int nb, uint16_t **data,int frequency)
-        {
-            DSOADC::Prescaler scaler;
-            adc_smp_rate rate;
-            xAssert(proxy->frequencyToRateScale (frequency, scaler,rate));
-            proxy->setupDualTimerSampling();
-            if(!proxy-> prepareDualTimeSampling (frequency,otherPin, rate,scaler)) return false;
-            proxy->startDualTimeSampling(otherPin,frequency,0);
-            if(!proxy->getSamples(data,nb)) return false;
-            return true;
-        }
+        bool dualTimeSample(int otherPin, int nb, uint16_t **data,int frequency);
+        
+          
+       
 protected:
         DSOADC *proxy;
         float vcc;
