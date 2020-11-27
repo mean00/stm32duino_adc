@@ -177,7 +177,7 @@ public:
             bool awdTriggered() {return _triggered;}
             void stopDmaCapture();
             void stopTimeCapture();
-    static  void getRegisters();
+    static  int  getRegisters(uint32_t *regs); // regs must be at least 16 entries!,
             void resetStats();
             bool setupTimerSampling(); // this is to be called once when switching from DMA to timer
             bool setupDualTimerSampling();

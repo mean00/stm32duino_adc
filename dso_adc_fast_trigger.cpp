@@ -33,22 +33,12 @@ Adafruit Libraries released under their specific licenses Copyright (c) 2013 Ada
  * 
  * @return 
  */
-#define NB_REG 14
-static volatile uint32_t reg[NB_REG];
 
 
 void DSOADC::resetStats()
 {
 }
 
-void DSOADC::getRegisters(void)
-{
-    __IO uint32_t  *p=(__IO uint32_t *)ADC1->regs;
-    for(int i=0;i<NB_REG;i++)
-    {
-       reg[i]=p[i]; 
-    }
-}
 /**
  */
 bool DSOADC::commonTrigger (int count,uint32_t triggerValueADC)

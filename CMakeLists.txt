@@ -1,4 +1,5 @@
 IF(USE_GD32F303 OR USE_GD32F103)
+    ADD_DEFINITIONS("-DHIGH_SPEED_ADC")
     SET(UTIL dso_adc_slow_gd32.cpp)
 ELSE()
     SET(UTIL dso_adc_slow_stm32.cpp)

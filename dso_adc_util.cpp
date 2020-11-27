@@ -76,10 +76,23 @@ float DSOADC::readVCCmv()
    
    adc_Register->CR2 |= ADC_CR2_TSVREFE;    // enable VREFINT and temp sensor
    adc_Register->SMPR1 =  ADC_SMPR1_SMP17;  // sample ra
+   
+   adc_Register->SQR3 = 17;
+   
+
+   
+   
+   
    for(int i=0;i<NB_SAMPLE;i++)
    {
-       delay(10);   
-       fvcc+=  adc_read(ADC1, 17); 
+       delay(10);          
+       adc_Register->CR2 |= ADC_CR2_SWSTART;
+       while (!(adc_Register->SR & ADC_SR_EOC)        )
+       {
+        
+       }
+       int rd= adc_Register->DR  & 0xFFF; // 12 bits       
+       fvcc+=  rd; 
    }
     fvcc=(1200. * 4096.*NB_SAMPLE) /fvcc;   
     adc_Register->CR2 &= ~ADC_CR2_TSVREFE;    // disable VREFINT and temp sensor
@@ -527,5 +540,4 @@ void DSOADC::setWatchdogTriggerValue(uint32_t high, uint32_t low)
         ;
     return regs->DR&0xffff;
  }
-
 //

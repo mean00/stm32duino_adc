@@ -123,5 +123,21 @@ int DSOADC::pollingRead()
   regs->CR2=oldCr2;
   return val;
 }
+
+#define NB_REG 14
+static volatile uint32_t reg[NB_REG];
+
+int  DSOADC::getRegisters(uint32_t *regs)
+{
+    __IO uint32_t  *p=(__IO uint32_t *)ADC1->regs;
+    for(int i=0;i<NB_REG;i++)
+    {
+       regs[i]=p[i]; 
+       reg[i]=regs[i];
+    }
+    return NB_REG;
+}
+
+
 // EOF
 

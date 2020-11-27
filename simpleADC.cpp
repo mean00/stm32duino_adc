@@ -19,12 +19,14 @@
  * nb : in/out, ,nb samples asked, nb samples available
  */
 
-bool simpleAdc::sample(int nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale)
+bool simpleAdc::sample(int &nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale)
 {
     proxy->setupDmaSampling();
     if(!proxy->prepareDMASampling(rate,scale)) return false;
-    proxy->startDMASampling(nb);
+    proxy->startDMASampling(nb+1);
     if(!proxy->getSamples(data,nb)) return false;
+    (*data)++;
+    if(nb) nb--;
     return true;
 }
 /**
@@ -36,7 +38,7 @@ bool simpleAdc::sample(int nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescal
  * @param scale
  * @return 
  */
-bool simpleAdc::dualSample(int otherPin, int nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale)
+bool simpleAdc::dualSample(int otherPin, int &nb, uint16_t **data,adc_smp_rate rate,DSOADC::Prescaler scale)
 {
     proxy->setupTimerSampling();
     if(!proxy->prepareFastDualDMASampling (otherPin,rate,scale))
@@ -61,7 +63,7 @@ bool simpleAdc::dualSample(int otherPin, int nb, uint16_t **data,adc_smp_rate ra
  * @param frequency
  * @return 
  */
-bool simpleAdc::timeSample(int nb, uint16_t **data,int frequency)
+bool simpleAdc::timeSample(int &nb, uint16_t **data,int frequency)
 {
     DSOADC::Prescaler scaler;
     adc_smp_rate rate;
@@ -81,7 +83,7 @@ bool simpleAdc::timeSample(int nb, uint16_t **data,int frequency)
  * @param frequency
  * @return 
  */
-bool simpleAdc::dualTimeSample(int otherPin, int nb, uint16_t **data,int frequency)
+bool simpleAdc::dualTimeSample(int otherPin, int &nb, uint16_t **data,int frequency)
 {
 
     DSOADC::Prescaler scaler;
@@ -101,3 +103,48 @@ bool simpleAdc::dualTimeSample(int otherPin, int nb, uint16_t **data,int frequen
     }
     return true;
 }
+/**
+ * 
+ * @param pin
+ */
+ simpleAdc::simpleAdc(int pin)
+{
+    proxy=new DSOADC(pin);
+    proxy->setupADCs ();  
+    vcc=proxy->getVCCmv();
+    proxy->clearSamples();
+    proxy->setADCPin(pin);
+}
+ /**
+  * 
+  * @return 
+  */
+float simpleAdc::getVcc()
+{
+    return vcc;
+}
+/**
+ * 
+ */
+void simpleAdc::clearSamples()
+{
+    proxy->clearSamples();
+}
+/**
+ * 
+ */
+simpleAdc::~simpleAdc()
+{
+    delete proxy;
+    proxy=NULL;
+}
+/**
+ * 
+ * @param newPin
+ * @return 
+ */
+bool simpleAdc::changePin(int newPin)
+{
+    return proxy->setADCPin(newPin);
+}
+// EOF
