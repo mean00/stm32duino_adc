@@ -533,9 +533,19 @@ void DSOADC::setWatchdogTriggerValue(uint32_t high, uint32_t low)
     volatile adc_reg_map *regs=  ADC2->regs; //PIN_MAP[COUPLING_PIN].adc_device.regs;
     
     uint32_t sqr1=regs->SQR1 ;
-    uint32_t sqr3=regs->SQR3 ;
     uint32_t sqr2=regs->SQR2 ;
+    uint32_t sqr3=regs->SQR3 ;
+    uint32_t smpr1=regs->SMPR1;
+    uint32_t smpr2=regs->SMPR2;
+    uint32_t cr1=regs->CR1;
+    uint32_t cr2=regs->CR2;
+  
     
+    regs->CR1&=~ADC_CR1_DUALMASK; 
+    regs->CR2&=~ADC_CR2_DMA;    
+    regs->CR2&=~ADC_CR2_CONT;
+    
+    adc_set_sample_rate(ADC2, ADC_SMPR_13_5);
     adc_set_reg_seqlen(ADC2, 1);
 
     regs->SQR3 = pin;
@@ -543,10 +553,15 @@ void DSOADC::setWatchdogTriggerValue(uint32_t high, uint32_t low)
     while (!(regs->SR & ADC_SR_EOC))
         ;
     uint16_t value=regs->DR&0xffff;
+
+    regs->CR1=cr1;
+    regs->CR2=cr2;
     
+    regs->SMPR1=smpr1;
+    regs->SMPR2=smpr2;
     regs->SQR1=sqr1;
-    regs->SQR3=sqr3; 
     regs->SQR2=sqr2; 
+    regs->SQR3=sqr3; 
     return value;
  }
 //
