@@ -121,6 +121,7 @@ bool DSOADC::startDMA()
 bool DSOADC::startDualDMA()
 {    
  volatile uint32_t adc2;   
+  
  // ADC -- 1 --
   cr2=ADC1->regs->CR2;
   cr2&= ~ADC_CR2_SWSTART;   

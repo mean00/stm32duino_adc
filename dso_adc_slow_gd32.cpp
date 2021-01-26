@@ -32,7 +32,7 @@ bool    DSOADC::setupTimerSampling()
   return true;
 }
 #warning OVERSAMPLING NOT SUPPORTED HERE
-bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
+bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,int overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
 {   
     int fq;
     ADC_TIMER.pause();
@@ -43,7 +43,7 @@ bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSamp
        _oldTimerFq=fq;
        _timerSamplingRate=adcRate;
        _timerScale=adcScale;
-       _overSampling=false;
+       _overSampling=1;
        setTimeScale(_timerSamplingRate,_timerScale);
        programTimer(  timerOvf,   timerScale);
      }  
@@ -58,7 +58,7 @@ bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSamp
  * @param adcScale
  * @return 
  */
-bool    DSOADC::prepareDualTimerSampling (int timerScale, int timerOvf,bool overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
+bool    DSOADC::prepareDualTimerSampling (int timerScale, int timerOvf,int overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
 {       
    return   prepareTimerSampling(timerScale,timerOvf,overSampling,adcRate,adcScale);
 }
@@ -68,7 +68,7 @@ bool    DSOADC::prepareDualTimerSampling (int timerScale, int timerOvf,bool over
  * @param fq
  * @return 
  */
-bool    DSOADC::prepareTimerSampling (int fq,bool overSampling,adc_smp_rate rate , DSOADC::Prescaler scale)
+bool    DSOADC::prepareTimerSampling (int fq,int overSampling,adc_smp_rate rate , DSOADC::Prescaler scale)
 {   
   ADC_TIMER.pause();
   if(fq!=_oldTimerFq)
@@ -77,15 +77,8 @@ bool    DSOADC::prepareTimerSampling (int fq,bool overSampling,adc_smp_rate rate
     _timerSamplingRate=rate;
     _timerScale=scale;
     _overSampling=overSampling;
-    // do a 4 time oversampling
-    if(overSampling)
-    {
-      fq*=OVERSAMPLING_FACTOR;
-      setOverSamplingFactor(OVERSAMPLING_FACTOR);        
-    }else          
-    {
-        setOverSamplingFactor(1);
-    }
+    fq*=overSampling;
+    setOverSamplingFactor(overSampling);        
     int scaler=F_CPU/(fq*65535);
     scaler+=1;
     int high=F_CPU/scaler;
@@ -115,6 +108,11 @@ bool    DSOADC::setOverSamplingFactor  (int overSamp)
         case 2 :    o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(0)+GD_OVERSAMPLING_OVSS(1)+GD_OVERSAMPLING_TOVS; break; // shift 1 bits, x2
         case 4 :    o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(1)+GD_OVERSAMPLING_OVSS(2)+GD_OVERSAMPLING_TOVS; break; // shift 2 bits, x4
         case 8 :    o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(2)+GD_OVERSAMPLING_OVSS(3)+GD_OVERSAMPLING_TOVS; break; // Shift 3 bits, x8
+        case 16 :   o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(3)+GD_OVERSAMPLING_OVSS(4)+GD_OVERSAMPLING_TOVS; break; // Shift 3 bits, x8
+        case 32 :   o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(4)+GD_OVERSAMPLING_OVSS(5)+GD_OVERSAMPLING_TOVS; break; // Shift 3 bits, x8
+        case 64 :   o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(5)+GD_OVERSAMPLING_OVSS(6)+GD_OVERSAMPLING_TOVS; break; // Shift 3 bits, x8
+        case 128 :  o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(6)+GD_OVERSAMPLING_OVSS(7)+GD_OVERSAMPLING_TOVS; break; // Shift 3 bits, x8
+        case 256 :  o=GD_OVERSAMPLING_ENABLED+GD_OVERSAMPLING_OVSR(7)+GD_OVERSAMPLING_OVSS(8)+GD_OVERSAMPLING_TOVS; break; // Shift 3 bits, x8
         default:
             xAssert(0);
             break;
