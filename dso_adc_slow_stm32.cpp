@@ -23,9 +23,9 @@ bool    DSOADC::setupTimerSampling()
   _oldTimerFq=0;
   return true;
 }
-bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
+bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,int overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
 {   
-    
+    xAssert(overSampling==1); // no oversampling on stm32
     int fq;
     ADC_TIMER.pause();
      pwmGetFrequency(  timerScale, timerOvf,fq);
@@ -37,7 +37,7 @@ bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSamp
        _timerScale=adcScale;
        
        
-       _overSampling=false;
+       _overSampling=1;
         programTimer(  timerOvf,   timerScale);       
      }  
     return true;    
@@ -51,8 +51,9 @@ bool    DSOADC::prepareTimerSampling (int timerScale, int timerOvf,bool overSamp
  * @param adcScale
  * @return 
  */
-bool    DSOADC::prepareDualTimerSampling (int timerScale, int timerOvf,bool overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
+bool    DSOADC::prepareDualTimerSampling (int timerScale, int timerOvf,int overSampling,adc_smp_rate adcRate , DSOADC::Prescaler adcScale)
 {       
+    xAssert(overSampling==1); // no oversampling on stm32
    return   prepareTimerSampling(timerScale,timerOvf,overSampling,adcRate,adcScale);
 }
 
@@ -61,15 +62,16 @@ bool    DSOADC::prepareDualTimerSampling (int timerScale, int timerOvf,bool over
  * @param fq
  * @return 
  */
-bool    DSOADC::prepareTimerSampling (int fq,bool overSampling,adc_smp_rate rate , DSOADC::Prescaler scale)
+bool    DSOADC::prepareTimerSampling (int fq,int overSampling,adc_smp_rate rate , DSOADC::Prescaler scale)
 {   
   ADC_TIMER.pause();
+  xAssert(overSampling==1); // no oversampling on stm32
   if(fq!=_oldTimerFq)
   {
     _oldTimerFq=fq;
     _timerSamplingRate=rate;
     _timerScale=scale;
-    _overSampling=false;
+    _overSampling=1;
     int scaler=F_CPU/(fq*65535);
     scaler+=1;
     int high=F_CPU/scaler;
