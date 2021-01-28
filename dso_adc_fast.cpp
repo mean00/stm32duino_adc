@@ -56,7 +56,7 @@ DSOADC::DSOADC(int pin)
  
   // Set up our sensor pin(s)  
   dmaSemaphore=new FancySemaphore;  
-  adc_Register=  PIN_MAP[_pin].adc_device->regs;
+  adc_Register=   adc_Register=  ADC1->regs;  //PIN_MAP[_pin].adc_device->regs;
   
   
   enableDisableIrq(false);
@@ -89,7 +89,7 @@ void DSOADC::clearSamples()
 bool    DSOADC::setADCPin(int pin)
 {
     _pin=pin;
-    adc_Register=  PIN_MAP[_pin].adc_device->regs;
+    adc_Register=  ADC1->regs; // Force ADC1 ! PIN_MAP[_pin].adc_device->regs;
     setChannel(PIN_MAP[_pin].adc_channel);
     return true;
 }

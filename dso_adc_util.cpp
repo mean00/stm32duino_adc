@@ -527,10 +527,61 @@ void DSOADC::setWatchdogTriggerValue(uint32_t high, uint32_t low)
  * @param pin
  * @return 
  */
- uint16_t directADC2Read(int pin)
+extern void Logger(const char *fmt...);
+ uint16_t directADC2Read(int channel)
  {
 
-    volatile adc_reg_map *regs=  ADC2->regs; //PIN_MAP[COUPLING_PIN].adc_device.regs;
+    volatile adc_reg_map *regs=  ADC2->regs;
+    
+    noInterrupts();
+    
+    volatile uint32_t sqr1=regs->SQR1 ;
+    volatile uint32_t sqr2=regs->SQR2 ;
+    volatile uint32_t sqr3=regs->SQR3 ;
+    volatile uint32_t smpr1=regs->SMPR1;
+    volatile uint32_t smpr2=regs->SMPR2;
+    volatile uint32_t cr1=regs->CR1;
+    volatile uint32_t cr2=regs->CR2;
+    
+  //  regs->CR2=0; // ADC2 off
+    
+    uint32_t sr=regs->SR;
+    regs->SMPR1=4; // 41.5 cycle
+    regs->SMPR2=0;
+    regs->SQR1=0;
+    regs->SQR2=0;
+    regs->SQR3=channel;  
+    
+    regs->CR2 |= ADC_CR2_ADON;
+    delayMicroseconds(50);
+    regs->CR1=ADC_CR1_EOCIE;
+    regs->CR2 |= ADC_CR2_SWSTART;
+    while (!(regs->SR & ADC_SR_EOC))
+    ;
+
+    uint16_t value= (uint16)(regs->DR & ADC_DR_DATA);
+    
+    sr=regs->SR;
+    
+    regs->CR1=cr1;
+    regs->CR2=cr2;
+    
+    regs->SMPR1=smpr1;
+    regs->SMPR2=smpr2;
+    regs->SQR1=sqr1;
+    regs->SQR2=sqr2; 
+    regs->SQR3=sqr3; 
+    regs->SR=0; // clear all pending interrutps
+    interrupts();
+    
+    //Logger("CPL=%d\n",value);
+    
+    return value;
+ }
+ uint16_t directADC1Read(int pin)
+ {
+
+    volatile adc_reg_map *regs=  ADC1->regs; //PIN_MAP[COUPLING_PIN].adc_device.regs;
     
     uint32_t sqr1=regs->SQR1 ;
     uint32_t sqr2=regs->SQR2 ;
