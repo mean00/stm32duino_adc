@@ -191,7 +191,7 @@ protected:
             TriggerState    _triggerState;
             int             _triggerValueADC;
             int             _oldTimerFq; // old timer frequency value
-  static    ADC_CAPTURE_MODE     _dual;
+  static    ADC_CAPTURE_MODE   _dual;
             ADC_TRIGGER_SOURCE _source; // source of sampling signal : SWSTART or Timer
             int                _overSampling;
             adc_smp_rate       _timerSamplingRate;
@@ -200,6 +200,11 @@ public:
 static      uint16_t adcInternalBuffer[ADC_INTERNAL_BUFFER_SIZE+16];            
 };
 
+// These are blocking 1 sample read on the channel
+// using injected mode. It should NOT disturb other ADC operations going on
+// Interrupts are disabled while this is happening
+uint16_t directADC1Read(int channel);
+uint16_t directADC2Read(int channel);
 
 // EOF
 

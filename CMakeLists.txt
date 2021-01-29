@@ -10,6 +10,7 @@ dso_adc_slow.cpp ${UTIL}
 dso_adc_util.cpp dso_adc_addon.cpp dso_adc_updown.cpp
 fancyLock.cpp myPwm.cpp
 simpleADC.cpp
+dso_adc_injected.cpp
 ) 
 IF(USE_TRIGGER)
 SET(SRCS ${SRCS} dso_adc_fast_trigger.cpp dso_adc_slow_trigger.cpp )
