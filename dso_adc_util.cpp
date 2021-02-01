@@ -160,7 +160,19 @@ void DSOADC::setupADCs ()
   // 
   readVCCmv();  
     
-// Restart from the beginning
+  
+  // Restart from the beginning
+  
+  // Make sure we have a clock
+  RCC_BASE->APB2ENR |= RCC_APB2ENR_ADC1EN_BIT | RCC_APB2ENR_ADC2EN_BIT;
+  
+  // Reset the whole peripheral
+  RCC_BASE->APB2RSTR|=RCC_APB2RSTR_ADC1RST+RCC_APB2RSTR_ADC2RST;
+  
+  delayMicroseconds(50);
+  
+  // then init
+  
   initSeqs(ADC1);
   initSeqs(ADC2);
  // 2 - Setup ADC
