@@ -238,7 +238,7 @@ bool    DSOADC::prepareDualTimeSampling (int fq,int otherPin, adc_smp_rate rate,
     adc_set_sample_rate(ADC2, rate); 
 
     // now set frequency
-    return prepareTimerSampling(fq,false,rate,scale);
+    return prepareTimerSampling(fq,1,rate,scale);
 }
 
 bool DSOADC::setupDualTimerSampling()

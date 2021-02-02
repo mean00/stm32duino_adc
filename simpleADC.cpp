@@ -70,7 +70,7 @@ bool simpleAdc::timeSample(int &nb, uint16_t **data,int frequency)
     xAssert(proxy->frequencyToRateScale (frequency, scaler,rate));
     proxy->setupTimerSampling();
     //if(!proxy->prepareTimerSampling(frequency, false, ADC_SMPR_28_5 , DSOADC::ADC_PRESCALER_4)) return false;                       
-    if(!proxy->prepareTimerSampling(frequency, false, rate,scaler)) return false;
+    if(!proxy->prepareTimerSampling(frequency, 1, rate,scaler)) return false;
     proxy->startTimerSampling(nb);
     if(!proxy->getSamples(data,nb)) return false;
     return true;
