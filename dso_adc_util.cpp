@@ -64,7 +64,7 @@ void DSOADC::allAdcsOnOff(bool on)
     }
 #endif
 }
-
+extern uint16_t directADCRead(adc_dev *adc, int channel);
 /**
  * 
  * @return 
@@ -72,30 +72,25 @@ void DSOADC::allAdcsOnOff(bool on)
 #define NB_SAMPLE 16
 float DSOADC::readVCCmv()
 {
+   uint32_t smpr1=adc_Register->SMPR1;
+   uint32_t sqr3=adc_Register->SQR3;
    float fvcc=0;
-   
-   adc_Register->CR2 |= ADC_CR2_TSVREFE;    // enable VREFINT and temp sensor
-   adc_Register->SMPR1 =  ADC_SMPR1_SMP17;  // sample ra
-   
-   adc_Register->SQR3 = 17;
-   
-
-   
-   
-   
+    
+       
+   adc_Register->SMPR1 =  ADC_SMPR1_SMP17;  // 239.5 cycles for channel 17  
+   adc_Register->CR2 |=  ADC_CR2_TSVREFE; 
    for(int i=0;i<NB_SAMPLE;i++)
    {
-       delay(10);          
-       adc_Register->CR2 |= ADC_CR2_SWSTART;
-       while (!(adc_Register->SR & ADC_SR_EOC)        )
-       {
+        delay(10);   
+        fvcc+=directADCRead(ADC1,17);
         
-       }
-       int rd= adc_Register->DR  & 0xFFF; // 12 bits       
-       fvcc+=  rd; 
-   }
-    fvcc=(1200. * 4096.*NB_SAMPLE) /fvcc;   
+   }   
+    fvcc=(1200. * 4095.*(float)NB_SAMPLE) /fvcc;   
     adc_Register->CR2 &= ~ADC_CR2_TSVREFE;    // disable VREFINT and temp sensor
+    
+    adc_Register->SMPR1=smpr1;
+    adc_Register->SQR3=sqr3;
+
     vcc=fvcc;
     return fvcc;
 }
