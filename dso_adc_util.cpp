@@ -222,7 +222,7 @@ void DSOADC::setupADCs ()
     r&=~mask;
     r|=(val&3)<<14;
     
-#ifdef     HIGH_SPEED_ADC
+#ifdef     GD32_ADC
     #define ADC_PSC3 (1<<29)
     #define ADC_PSC2 (1<<28)
     int b2=val&4;
