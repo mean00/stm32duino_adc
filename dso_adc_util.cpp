@@ -153,7 +153,7 @@ bool DSOADC::setSourceInternal(adc_dev *dev)
 void DSOADC::setupADCs ()
 {
   // 
-  readVCCmv();  
+  
     
   
   // Restart from the beginning
@@ -192,6 +192,11 @@ void DSOADC::setupADCs ()
   cr2 |=ADC_CR2_ADON;
   ADC1->regs->CR2=cr2;
   ADC2->regs->CR2=cr2; // Power on
+  
+  readVCCmv();  
+  setChannel(channel); 
+
+  
 }
 /**
  * 
