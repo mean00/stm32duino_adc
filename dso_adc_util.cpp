@@ -77,7 +77,7 @@ float DSOADC::readVCCmv()
    float fvcc=0;
     
        
-   adc_Register->SMPR1 =  ADC_SMPR1_SMP17;  // 239.5 cycles for channel 17  
+   adc_Register->SMPR1 = ADC_SMPR1_SMP17;  // 239.5 cycles for channel 17  
    adc_Register->CR2 |=  ADC_CR2_TSVREFE; 
    for(int i=0;i<NB_SAMPLE;i++)
    {
@@ -455,6 +455,14 @@ void DSOADC::enableDisableIrqSource(bool onoff, int interrupt)
                   SetCR1(cr1);
                 }
                  break;
+                 
+            case ADC_JEOC:
+            {
+                  uint32_t cr1=ADC1->regs->CR1;
+                  cr1 |= ADC_CR1_JEOCIE;
+                  SetCR1(cr1);
+                  break;
+            }
             default:
                 xAssert(0);
                 break;
@@ -478,6 +486,12 @@ void DSOADC::enableDisableIrqSource(bool onoff, int interrupt)
                   cr1 &= ~ADC_CR1_EOCIE;
                   SetCR1(cr1);
                 }
+            case ADC_JEOC:
+                {
+                  uint32_t cr1=ADC1->regs->CR1;
+                  cr1 &= ~ADC_CR1_JEOCIE;
+                  SetCR1(cr1);
+                }            
                  break;
             default:
                 xAssert(0);
