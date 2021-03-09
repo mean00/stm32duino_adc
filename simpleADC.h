@@ -24,8 +24,16 @@ public:
         void clearSamples();
        
         
-        
+        /* Set the input pin in single pin mode*/
         bool changePin(int newPin);
+        
+        /**
+         *  \fn setPins
+         * \brief set the pins to capture from. This is using a single ADC,
+         * sampling each pins in sequence
+         * /!\ this only works with timeSample (and MAYBE sample) but definitively not with the dual ones
+         */
+        bool setPins(int nb, int *pins);
         /**
          * Acquire nb samples using ADC rate/scale as timebase
          * nb : in/out, ,nb samples asked, nb samples available

@@ -93,6 +93,32 @@ bool    DSOADC::setADCPin(int pin)
     setChannel(PIN_MAP[_pin].adc_channel);
     return true;
 }
+/**
+ * 
+ * @param nb
+ * @param pins
+ * @return 
+ */
+bool    DSOADC::setADCPins(int nb,int *pins)
+{
+    if(nb>6)
+    {
+        xAssert(0);
+    }
+    uint32_t sqr3=0,sqr1=0;
+    adc_dev *dev= PIN_MAP[pins[0]].adc_device;
+    for(int i=0;i<nb;i++)
+    {
+        if(dev!= PIN_MAP[pins[i]].adc_device) xAssert(0); // different ADC!
+        sqr3=sqr3<<5;
+        sqr3|=PIN_MAP[pins[i]].adc_channel;
+    }
+    setChannel(sqr3);
+    dev->regs->SQR1=(nb-1)<<20;
+    dev->regs->CR1|=ADC_CR1_SCAN;
+    return true;
+    
+}
 
 // Grab the samples from the ADC
 // Theoretically the ADC can not go any faster than this.

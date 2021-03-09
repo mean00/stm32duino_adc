@@ -147,4 +147,15 @@ bool simpleAdc::changePin(int newPin)
 {
     return proxy->setADCPin(newPin);
 }
+/**
+ * 
+ * @param nb
+ * @param pins
+ * @return 
+ */
+bool simpleAdc::setPins(int nb, int *pins)
+{
+      return proxy->setADCPins(nb,pins);
+}
+
 // EOF
