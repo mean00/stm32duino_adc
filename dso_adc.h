@@ -103,6 +103,7 @@ public:
                     DSOADC(int pin);
             bool    setSource(const ADC_TRIGGER_SOURCE source);            
             bool    setADCPin(int pin);
+            bool    setADCPins(int nb,int *pins); // single ADC sampling the pins in sequence
             void    setChannel(int channel);
             bool    setTimeScale(adc_smp_rate one, DSOADC::Prescaler two);
             bool    prepareDMASampling (adc_smp_rate rate,DSOADC::Prescaler scale);
