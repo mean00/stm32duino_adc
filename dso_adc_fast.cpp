@@ -107,7 +107,7 @@ bool    DSOADC::setADCPins(int nb,int *pins)
     }
     uint32_t sqr3=0,sqr1=0;
     adc_dev *dev= PIN_MAP[pins[0]].adc_device;
-    for(int i=0;i<nb;i++)
+    for(int i=nb-1;i>=0;i--)
     {
         if(dev!= PIN_MAP[pins[i]].adc_device) xAssert(0); // different ADC!
         sqr3=sqr3<<5;
